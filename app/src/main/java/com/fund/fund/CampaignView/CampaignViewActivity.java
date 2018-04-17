@@ -1,6 +1,7 @@
 package com.fund.fund.CampaignView;
 
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.design.widget.NavigationView;
@@ -11,18 +12,16 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 
-import com.fund.fund.JSONParser;
-import com.fund.fund.Models.Campaign;
-import com.fund.fund.OkHttpHandler;
+import com.fund.fund.Models.Event;
 import com.fund.fund.R;
+import com.fund.fund.Repositories.CampaignRepository;
 
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 import okhttp3.Call;
@@ -32,7 +31,7 @@ import okhttp3.Response;
 public class CampaignViewActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    private List<Campaign> campaigns;
+    private List<Event> events;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,7 +39,7 @@ public class CampaignViewActivity extends AppCompatActivity
         setContentView(R.layout.activity_campaign_view);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-//        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -51,13 +50,38 @@ public class CampaignViewActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        RecyclerView rv = (RecyclerView)findViewById(R.id.rv);
+        FloatingActionButton floatingActionButton = (FloatingActionButton) findViewById(R.id.fab);
+        floatingActionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onAddEventClicked();
+            }
+        });
+
+        final RecyclerView rv = (RecyclerView)findViewById(R.id.rv);
         LinearLayoutManager llm = new LinearLayoutManager(this);
         rv.setLayoutManager(llm);
-        campaigns = getCampaigns();
-        CardRecyclerViewAdapter adapter = new CardRecyclerViewAdapter(campaigns);
-        rv.setAdapter(adapter);
+        CampaignRepository.getCampaigns(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Toast.makeText(getBaseContext(), "Failed to retrieve events", Toast.LENGTH_LONG).show();
+            }
 
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                try {
+                    events = CampaignRepository.parseCampaignsResponse(response.body().string());
+                    CardRecyclerViewAdapter adapter = new CardRecyclerViewAdapter(events);
+                    rv.setAdapter(adapter);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+    }
+
+    private void onAddEventClicked() {
     }
 
     @Override

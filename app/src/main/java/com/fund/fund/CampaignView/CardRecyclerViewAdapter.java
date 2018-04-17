@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.fund.fund.Models.Campaign;
+import com.fund.fund.Models.Event;
 import com.fund.fund.R;
 import com.squareup.picasso.Picasso;
 import java.util.List;
@@ -18,10 +18,10 @@ import java.util.List;
  */
 
 public class CardRecyclerViewAdapter extends RecyclerView.Adapter<CardRecyclerViewAdapter.CampaignViewHolder>{
-    List<Campaign> campaigns;
+    List<Event> events;
 
-    CardRecyclerViewAdapter(List<Campaign> campaigns) {
-     this.campaigns = campaigns;
+    CardRecyclerViewAdapter(List<Event> events) {
+     this.events = events;
     }
     @Override
     public CampaignViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -32,15 +32,15 @@ public class CardRecyclerViewAdapter extends RecyclerView.Adapter<CardRecyclerVi
 
     @Override
     public void onBindViewHolder(CampaignViewHolder holder, int i) {
-        holder.name.setText(campaigns.get(i).title);
-        holder.location.setText(campaigns.get(i).location);
+        holder.name.setText(events.get(i).title);
+        holder.location.setText(events.get(i).event_venue);
         ImageView photo  = holder.photo;
-        Picasso.with(photo.getContext()).load(campaigns.get(i).imgUrl).into(photo);
+        Picasso.with(photo.getContext()).load(events.get(i).event_image_url).into(photo);
     }
 
     @Override
     public int getItemCount() {
-        return campaigns.size();
+        return events.size();
     }
 
     public static class CampaignViewHolder extends RecyclerView.ViewHolder {

@@ -7,15 +7,17 @@ import java.util.List;
  */
 
 public class Component {
-    public String name;
+    int component_id;
+    public String title;
     public Double budget;
-    public Double cur_funded;
-    public List<Funder> funders;
+    String image_url;
+    List<Funder> funders;
 
-    public Component(String name, Double budget, Double cur_funded, List<Funder> funders) {
-        this.name = name;
+    public Component(int component_id, String title, Double budget, String image_url, List<Funder> funders) {
+        this.component_id = component_id;
+        this.title = title;
         this.budget = budget;
-        this.cur_funded = cur_funded;
+        this.image_url = image_url;
         this.funders = funders;
     }
 }

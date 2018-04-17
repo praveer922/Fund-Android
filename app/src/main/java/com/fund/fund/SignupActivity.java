@@ -86,7 +86,8 @@ public class SignupActivity extends AppCompatActivity {
         FormBody.Builder formBuilder = new FormBody.Builder()
                 .add("name", name)
                 .add("email", email)
-                .add("password", password);
+                .add("password", password)
+                .add("profile_image_url", "");
 
         RequestBody formBody = formBuilder.build();
 
@@ -102,6 +103,7 @@ public class SignupActivity extends AppCompatActivity {
                             onSignupFailed();
                         }
                     });
+                    e.printStackTrace();
                 }
 
                 @Override

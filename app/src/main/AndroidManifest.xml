@@ -31,7 +31,7 @@
         <activity
             android:name=".CampaignView.CampaignViewActivity"
             android:label="@string/title_activity_campaign"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.Campaign"></activity>
     </application>
 
 </manifest>

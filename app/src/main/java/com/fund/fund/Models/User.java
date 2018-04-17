@@ -5,13 +5,15 @@ package com.fund.fund.Models;
  */
 
 public class User {
+    int attendee_id;
+    String name;
     String email;
-    String display_name;
-    String imgUrl;
+    String profile_image_url;
 
-    User(String email, String display_name, String imgUrl) {
+    public User(int attendee_id, String name, String email, String profile_image_url) {
+        this.attendee_id = attendee_id;
+        this.name = name;
         this.email = email;
-        this.display_name = display_name;
-        this.imgUrl = imgUrl;
+        this.profile_image_url = profile_image_url;
     }
 }
