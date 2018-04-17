@@ -22,6 +22,7 @@ import com.fund.fund.Repositories.CampaignRepository;
 import org.json.JSONException;
 
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.List;
 
 import okhttp3.Call;
@@ -69,15 +70,25 @@ public class CampaignViewActivity extends AppCompatActivity
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
-                try {
-                    events = CampaignRepository.parseCampaignsResponse(response.body().string());
-                    CardRecyclerViewAdapter adapter = new CardRecyclerViewAdapter(events);
-                    rv.setAdapter(adapter);
-                } catch (JSONException e) {
-                    e.printStackTrace();
+                if(response.isSuccessful()) {
+                    try {
+                        events = CampaignRepository.parseCampaignsResponse(response.body().string());
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                CardRecyclerViewAdapter adapter = new CardRecyclerViewAdapter(events);
+                                rv.setAdapter(adapter);
+                            }
+                        });
+
+                    } catch (JSONException | ParseException e) {
+                        e.printStackTrace();
+                    }
+                }else {
+                    Toast.makeText(getBaseContext(), "Failed to retrieve events", Toast.LENGTH_LONG).show();
                 }
             }
-        });
+        }, getApplicationContext());
 
     }
 

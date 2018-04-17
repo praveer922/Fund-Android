@@ -1,6 +1,7 @@
 package com.fund.fund;
 
 import android.app.ProgressDialog;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Spannable;
@@ -170,7 +171,7 @@ public class LoginActivity extends AppCompatActivity {
 
     public void onLoginSuccess(String token) {
         _loginButton.setEnabled(true);
-        OkHttpHandler.getInstance().setToken(token);
+        OkHttpHandler.setToken(token, getApplicationContext());
         Intent intent = new Intent(this, CampaignViewActivity.class);
         startActivity(intent);
         Bungee.slideDown(this);

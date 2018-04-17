@@ -1,5 +1,7 @@
 package com.fund.fund.Repositories;
 
+import android.content.Context;
+
 import com.fund.fund.Models.Event;
 import com.fund.fund.Models.Component;
 import com.fund.fund.Models.Funder;
@@ -10,6 +12,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -21,27 +25,27 @@ import okhttp3.Callback;
 
 public class CampaignRepository {
 
-    public static List<Event> getCampaigns(Callback callback) {
+    public static List<Event> getCampaigns(Callback callback, Context applicationContext) {
         final List<Event> events = new ArrayList<>();
-        OkHttpHandler.getInstance().doGet("/api/auth/event/retrieve-all", callback);
+        OkHttpHandler.getInstance().doGet("/api/auth/event/retrieve-all", callback, applicationContext);
         return events;
     }
 
-    public static List<Event> parseCampaignsResponse(String responseBody) throws JSONException {
+    public static List<Event> parseCampaignsResponse(String responseBody) throws JSONException, ParseException {
         JSONObject json = new JSONObject(responseBody);
         JSONArray eventsJson = json.getJSONArray("data");
         List<Event> events = new ArrayList<Event>();
         for(int i=0;i<eventsJson.length();i++) {
             JSONObject eventJsonObject = eventsJson.getJSONObject(i);
             String event_id = eventJsonObject.getString("event_id");
-            String description = eventJsonObject.getString("description");
+            String description = eventJsonObject.getString("event_description");
             String event_title = eventJsonObject.getString("event_title");
             String event_venue = eventJsonObject.getString("event_venue");
             String event_owner_name = eventJsonObject.getString("event_owner_name");
             String event_owner_email     = eventJsonObject.getString("event_owner_email");
             String event_owner_profile_image     = eventJsonObject.getString("event_owner_profile_image");
-            Date event_date_created = new Date(eventJsonObject.getLong("event_date_created"));
-            Date event_date = new Date(eventJsonObject.getLong("event_date"));
+            Date event_date_created = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").parse(eventJsonObject.getString("event_date_created"));
+            Date event_date = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").parse(eventJsonObject.getString("event_date"));
             String event_image_url = eventJsonObject.getString("event_image_url");
 
             //attendees
