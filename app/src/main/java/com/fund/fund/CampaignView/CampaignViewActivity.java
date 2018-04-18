@@ -76,7 +76,7 @@ public class CampaignViewActivity extends AppCompatActivity
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                CardRecyclerViewAdapter adapter = new CardRecyclerViewAdapter(events);
+                                CardRecyclerViewAdapter adapter = new CardRecyclerViewAdapter(events,getApplicationContext());
                                 rv.setAdapter(adapter);
                             }
                         });

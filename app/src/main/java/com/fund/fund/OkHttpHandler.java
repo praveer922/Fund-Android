@@ -21,29 +21,27 @@ public class OkHttpHandler {
     public static String BASE_URL = "http://54.214.106.170:3333";
 
     private static OkHttpHandler okHttpHandlerInstance;
+    OkHttpClient client;
 
     OkHttpHandler() {
-
     }
 
     public void doPost(String path, RequestBody formBody, Callback callback) throws IOException, JSONException {
-        OkHttpClient client = new OkHttpClient();
         Request request = new Request.Builder()
                 .url(BASE_URL + path)
                 .post(formBody)
                 .build();
 
-        client.newCall(request)
+        getClient().newCall(request)
                 .enqueue(callback);
     }
 
     public void doGet(String path, Callback callback, Context applicationContext) {
-        OkHttpClient client = new OkHttpClient();
         Request request = new Request.Builder()
                 .url(BASE_URL + path)
                 .addHeader("Authorization", "Bearer " + getToken(applicationContext))
                 .build();
-        client.newCall(request)
+        getClient().newCall(request)
                 .enqueue(callback);
     }
 
@@ -53,6 +51,14 @@ public class OkHttpHandler {
         }
 
         return okHttpHandlerInstance;
+    }
+
+    public OkHttpClient getClient() {
+        if (client == null) {
+            return new OkHttpClient();
+        } else {
+            return client;
+        }
     }
 
     public static void setToken(String token, Context applicationContext) {

@@ -110,6 +110,7 @@ public class LoginActivity extends AppCompatActivity {
                             onLoginFailed("Login Failed");
                         }
                     });
+                    e.printStackTrace();
                 }
 
                 @Override

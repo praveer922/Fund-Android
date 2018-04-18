@@ -1,5 +1,6 @@
 package com.fund.fund.CampaignView;
 
+import android.content.Context;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -8,9 +9,9 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.fund.fund.Models.Event;
 import com.fund.fund.R;
-import com.squareup.picasso.Picasso;
 import java.util.List;
 
 /**
@@ -19,10 +20,13 @@ import java.util.List;
 
 public class CardRecyclerViewAdapter extends RecyclerView.Adapter<CardRecyclerViewAdapter.CampaignViewHolder>{
     List<Event> events;
+    Context context;
 
-    CardRecyclerViewAdapter(List<Event> events) {
-     this.events = events;
+    CardRecyclerViewAdapter(List<Event> events, Context applicationContext) {
+        this.events = events;
+        this.context = applicationContext;
     }
+
     @Override
     public CampaignViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.campaign_card_view, parent, false);
@@ -34,8 +38,7 @@ public class CardRecyclerViewAdapter extends RecyclerView.Adapter<CardRecyclerVi
     public void onBindViewHolder(CampaignViewHolder holder, int i) {
         holder.name.setText(events.get(i).title);
         holder.location.setText(events.get(i).event_venue);
-        ImageView photo  = holder.photo;
-        Picasso.with(photo.getContext()).load(events.get(i).event_image_url).into(photo);
+        Glide.with(context).load(events.get(i).event_image_url).into(holder.photo);
     }
 
     @Override
