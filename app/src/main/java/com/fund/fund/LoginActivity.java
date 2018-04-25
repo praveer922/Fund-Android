@@ -16,12 +16,19 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.facebook.AccessToken;
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
+import com.facebook.login.LoginResult;
+import com.facebook.login.widget.LoginButton;
 import com.fund.fund.CampaignView.CampaignViewActivity;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -35,11 +42,15 @@ import spencerstudios.com.bungeelib.Bungee;
 public class LoginActivity extends AppCompatActivity {
     private static final String TAG = "LoginActivity";
     private static final int REQUEST_SIGNUP = 0;
+    private static final String EMAIL = "email";
+    private static final String USER_FRIENDS = "user_friends";
 
     @BindView(R.id.input_email) EditText _emailText;
     @BindView(R.id.input_password) EditText _passwordText;
     @BindView(R.id.btn_login) Button _loginButton;
     @BindView(R.id.link_signup) TextView _signupLink;
+
+    CallbackManager callbackManager = CallbackManager.Factory.create();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -75,6 +86,93 @@ public class LoginActivity extends AppCompatActivity {
                 Bungee.slideLeft(LoginActivity.this);
             }
         });
+
+        //facebook login
+        LoginButton loginButton = (LoginButton) findViewById(R.id.fb_login_button);
+        loginButton.setReadPermissions(Arrays.asList(EMAIL,USER_FRIENDS));
+
+        // Callback registration
+        loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+            @Override
+            public void onSuccess(LoginResult loginResult) {
+                AccessToken accessToken = loginResult.getAccessToken();
+                onFacebookLoginSucess(accessToken);
+            }
+
+            @Override
+            public void onCancel() {
+                Toast.makeText(getApplicationContext(), "Facebook login cancelled", Toast.LENGTH_SHORT);
+            }
+
+            @Override
+            public void onError(FacebookException exception) {
+                Toast.makeText(getApplicationContext(), "Facebook login failed", Toast.LENGTH_SHORT);
+                exception.printStackTrace();
+            }
+        });
+
+    }
+
+    private void onFacebookLoginSucess(AccessToken accessToken) {
+        FormBody.Builder formBuilder = new FormBody.Builder()
+                .add("fb_token", accessToken.getToken());
+
+        RequestBody formBody = formBuilder.build();
+
+        try {
+            OkHttpHandler.getInstance().doPost("/api/user/facebook-login", formBody, new Callback() {
+                @Override
+                public void onFailure(Call call, IOException e) {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            onLoginFailed("Login Failed");
+                        }
+                    });
+                    e.printStackTrace();
+                }
+
+                @Override
+                public void onResponse(Call call, final Response response) throws IOException {
+                    if(response.isSuccessful()) {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                JSONObject jsonRes = null;
+                                try {
+                                    jsonRes = new JSONObject(response.body().string());
+                                    onLoginSuccess(jsonRes.getJSONObject("data").getString("token"));
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        });
+                    }
+
+                    if(response.code() == 403){
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                onLoginFailed("Facebook user login failed");
+                            }
+                        });
+                    } else if(response.code() == 422) {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                onLoginFailed("Facebook user login missing fields");
+                            }
+                        });
+                    }
+                }
+            });
+        } catch (IOException | JSONException e) {
+            e.printStackTrace();
+        }
+
+
     }
 
     public void login(String email, String password) {
@@ -144,9 +242,7 @@ public class LoginActivity extends AppCompatActivity {
                     }
                 }
             });
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (JSONException e) {
+        } catch (IOException | JSONException e) {
             e.printStackTrace();
         }
     }
@@ -162,6 +258,7 @@ public class LoginActivity extends AppCompatActivity {
                 //this.finish();
             }
         }
+        callbackManager.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override
