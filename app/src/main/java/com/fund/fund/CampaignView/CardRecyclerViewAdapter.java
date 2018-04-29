@@ -1,6 +1,7 @@
 package com.fund.fund.CampaignView;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -12,7 +13,11 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.fund.fund.Models.Event;
 import com.fund.fund.R;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by Praveer on 3/11/2018.
@@ -36,9 +41,24 @@ public class CardRecyclerViewAdapter extends RecyclerView.Adapter<CardRecyclerVi
 
     @Override
     public void onBindViewHolder(CampaignViewHolder holder, int i) {
-        holder.name.setText(events.get(i).title);
-        holder.location.setText(events.get(i).event_venue);
-        Glide.with(context).load(events.get(i).event_image_url).into(holder.photo);
+        final Event event = events.get(i);
+        holder.name.setText(event.title);
+        holder.location.setText(event.event_venue);
+        DateFormat df = new SimpleDateFormat("MMMM dd, yyyy", Locale.US);
+        holder.date.setText(df.format(event.event_date));
+        Glide.with(context).load(event.event_image_url).into(holder.photo);
+
+        holder.cv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(context,CampaignDetailsActivity.class);
+                intent.putExtra("image_url", event.event_image_url);
+                intent.putExtra("title",event.title);
+                intent.putExtra("venue",event.event_venue);
+                intent.putExtra("event_date", event.event_date.getTime());
+                context.startActivity(intent);
+            }
+        });
     }
 
     @Override
@@ -51,6 +71,7 @@ public class CardRecyclerViewAdapter extends RecyclerView.Adapter<CardRecyclerVi
         TextView name;
         TextView location;
         ImageView photo;
+        TextView date;
 
         CampaignViewHolder(View itemView) {
             super(itemView);
@@ -58,6 +79,8 @@ public class CardRecyclerViewAdapter extends RecyclerView.Adapter<CardRecyclerVi
             name = (TextView) itemView.findViewById(R.id.name);
             location = (TextView) itemView.findViewById(R.id.location);
             photo = (ImageView) itemView.findViewById(R.id.photo);
+            date = (TextView) itemView.findViewById(R.id.time);
+
         }
     }
 }

@@ -60,7 +60,6 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/location"
                 android:maxLines="3"
-                android:text="12/2/2018, 2pm"
                 android:textColor="@android:color/white"
                 android:textSize="15sp" />
 
