@@ -1,10 +1,12 @@
 package com.fund.fund.Models;
 
+import java.io.Serializable;
+
 /**
  * Created by Praveer on 3/21/2018.
  */
 
-public class User {
+public class User implements Serializable{
     int attendee_id;
     String name;
     String email;

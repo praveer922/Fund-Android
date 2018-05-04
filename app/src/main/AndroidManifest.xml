@@ -61,7 +61,7 @@
         <activity
             android:name=".CampaignView.CampaignDetailsActivity"
             android:label="@string/title_activity_campaign_details"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.CampaignDetails"></activity>
     </application>
 
 </manifest>

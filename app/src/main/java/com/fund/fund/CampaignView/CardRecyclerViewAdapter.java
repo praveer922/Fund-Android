@@ -52,10 +52,7 @@ public class CardRecyclerViewAdapter extends RecyclerView.Adapter<CardRecyclerVi
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(context,CampaignDetailsActivity.class);
-                intent.putExtra("image_url", event.event_image_url);
-                intent.putExtra("title",event.title);
-                intent.putExtra("venue",event.event_venue);
-                intent.putExtra("event_date", event.event_date.getTime());
+                intent.putExtra("event", event);
                 context.startActivity(intent);
             }
         });

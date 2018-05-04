@@ -2,6 +2,7 @@ package com.fund.fund.Models;
 
 import com.fund.fund.Models.Component;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
@@ -9,7 +10,7 @@ import java.util.List;
  * Created by Praveer on 3/11/2018.
  */
 
-public class Event {
+public class Event implements Serializable{
     public String id;
     public String title;
     public String description;

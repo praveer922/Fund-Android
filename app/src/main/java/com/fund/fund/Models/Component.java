@@ -1,12 +1,13 @@
 package com.fund.fund.Models;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
  * Created by Praveer on 3/21/2018.
  */
 
-public class Component {
+public class Component implements Serializable{
     int component_id;
     public String title;
     public Double budget;
