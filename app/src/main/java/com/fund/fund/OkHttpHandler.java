@@ -26,9 +26,10 @@ public class OkHttpHandler {
     OkHttpHandler() {
     }
 
-    public void doPost(String path, RequestBody formBody, Callback callback) throws IOException, JSONException {
+    public void doPost(String path, RequestBody formBody, Callback callback, Context applicationContext) throws IOException, JSONException {
         Request request = new Request.Builder()
                 .url(BASE_URL + path)
+                .addHeader("Authorization", "Bearer " + getToken(applicationContext))
                 .post(formBody)
                 .build();
 

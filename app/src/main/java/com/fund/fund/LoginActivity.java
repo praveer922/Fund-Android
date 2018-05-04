@@ -111,6 +111,12 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
+        //try quick login
+        String token = OkHttpHandler.getToken(this);
+        if(token!=null) {
+            tokenLogin(token);
+        }
+
     }
 
     private void onFacebookLoginSucess(AccessToken accessToken) {
@@ -120,7 +126,7 @@ public class LoginActivity extends AppCompatActivity {
         RequestBody formBody = formBuilder.build();
 
         try {
-            OkHttpHandler.getInstance().doPost("/api/user/facebook-login", formBody, new Callback() {
+            OkHttpHandler.getInstance().doPost("/api/user/login-facebook", formBody, new Callback() {
                 @Override
                 public void onFailure(Call call, IOException e) {
                     runOnUiThread(new Runnable() {
@@ -167,7 +173,7 @@ public class LoginActivity extends AppCompatActivity {
                         });
                     }
                 }
-            });
+            },this);
         } catch (IOException | JSONException e) {
             e.printStackTrace();
         }
@@ -176,8 +182,6 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void login(String email, String password) {
-        Log.d(TAG, "Login");
-
         if (!validate()) {
             onLoginFailed("Login Failed");
             return;
@@ -241,7 +245,51 @@ public class LoginActivity extends AppCompatActivity {
                         });
                     }
                 }
-            });
+            }, this);
+        } catch (IOException | JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void tokenLogin(final String token) {
+        FormBody.Builder formBuilder = new FormBody.Builder();
+
+        RequestBody formBody = formBuilder.build();
+
+        try {
+            OkHttpHandler.getInstance().doPost("/api/auth/user/token-login", formBody, new Callback() {
+                @Override
+                public void onFailure(Call call, IOException e) {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            onLoginFailed("Login Failed");
+                        }
+                    });
+                    e.printStackTrace();
+                }
+
+                @Override
+                public void onResponse(Call call, final Response response) throws IOException {
+                    if(response.isSuccessful()) {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                onLoginSuccess(token);
+                            }
+                        });
+                    }
+
+                    if(response.code() == 403){
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                onLoginFailed("User login failed.");
+                            }
+                        });
+                    }
+                }
+            }, this);
         } catch (IOException | JSONException e) {
             e.printStackTrace();
         }
@@ -252,10 +300,7 @@ public class LoginActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_SIGNUP) {
             if (resultCode == RESULT_OK) {
-
-                // TODO: Implement successful signup logic here
-                // By default we just finish the Activity and log them in automatically
-                //this.finish();
+                login(data.getStringExtra("email"),data.getStringExtra("password"));
             }
         }
         callbackManager.onActivityResult(requestCode, resultCode, data);

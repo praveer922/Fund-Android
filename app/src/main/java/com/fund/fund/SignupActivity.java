@@ -1,6 +1,7 @@
 package com.fund.fund;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Spannable;
@@ -80,8 +81,8 @@ public class SignupActivity extends AppCompatActivity {
         progressDialog.show();
 
         String name = _nameText.getText().toString();
-        String email = _emailText.getText().toString();
-        String password = _passwordText.getText().toString();
+        final String email = _emailText.getText().toString();
+        final String password = _passwordText.getText().toString();
 
         FormBody.Builder formBuilder = new FormBody.Builder()
                 .add("name", name)
@@ -113,7 +114,7 @@ public class SignupActivity extends AppCompatActivity {
                             @Override
                             public void run() {
                                 progressDialog.dismiss();
-                                onSignupSuccess();
+                                onSignupSuccess(email,password);
                             }
                         });
                     } else {
@@ -126,7 +127,7 @@ public class SignupActivity extends AppCompatActivity {
                         });
                     }
                 }
-            });
+            }, this);
         } catch (IOException e) {
             e.printStackTrace();
         } catch (JSONException e) {
@@ -135,9 +136,12 @@ public class SignupActivity extends AppCompatActivity {
 
     }
 
-    public void onSignupSuccess() {
+    public void onSignupSuccess(String email, String password) {
         _signupButton.setEnabled(true);
-        setResult(RESULT_OK, null);
+        Intent intent = new Intent();
+        intent.putExtra("email", email);
+        intent.putExtra("password", password);
+        setResult(RESULT_OK, intent);
         finish();
     }
 

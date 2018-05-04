@@ -72,14 +72,20 @@ public class CampaignRepository {
 
                 List<Funder> funders = new ArrayList<>();
                 JSONArray fundersJson = componentsJsonObject.getJSONArray("funders");
-                for(int k=0;k<fundersJson.length();k++) {
-                    JSONObject fundersJsonObject = fundersJson.getJSONObject(k);
-                    int funder_id = fundersJsonObject.getInt("id");
-                    String name = fundersJsonObject.getString("name");
-                    String email = fundersJsonObject.getString("email");
-                    String profile_image_url = fundersJsonObject.getString("profile_image_url");
-                    double amount_funded = fundersJsonObject.getDouble("amount");
-                    funders.add(new Funder(funder_id,name,email,profile_image_url,amount_funded));
+                if(fundersJson!=null) {
+                    for (int k = 0; k < fundersJson.length(); k++) {
+                        try {
+                            JSONObject fundersJsonObject = fundersJson.getJSONObject(k);
+                            int funder_id = fundersJsonObject.getInt("id");
+                            String name = fundersJsonObject.getString("name");
+                            String email = fundersJsonObject.getString("email");
+                            String profile_image_url = fundersJsonObject.getString("profile_image_url");
+                            double amount_funded = fundersJsonObject.getDouble("amount");
+                            funders.add(new Funder(funder_id, name, email, profile_image_url, amount_funded));
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
                 }
                 components.add(new Component(component_id,title,budget,image_url,funders));
             }
