@@ -50,9 +50,21 @@
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/avatar_list"
-                android:layout_width="50sp"
-                android:layout_height="50sp"
+                android:layout_width="wrap_content"
+                android:layout_marginTop="15dp"
+                android:layout_height="60sp"
                 android:layout_below="@id/time"></android.support.v7.widget.RecyclerView>
+
+            <TextView
+                android:id="@+id/others_text"
+                android:layout_width="wrap_content"
+                android:layout_marginTop="15dp"
+                android:layout_height="40sp"
+                android:layout_toRightOf="@id/avatar_list"
+                android:textSize="10sp"
+                android:layout_marginLeft="5dp"
+                android:gravity="center_vertical"
+                android:layout_below="@id/time"/>
 
             <TextView
                 android:id="@+id/event_description"
@@ -60,6 +72,33 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/avatar_list"
                 android:textSize="15sp" />
+            
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:layout_below="@+id/event_description">
+
+            <com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar
+                android:id="@+id/budget_bar"
+                android:layout_width="match_parent"
+                android:layout_height="25sp"
+                app:rcRadius="10dp"
+                app:rcReverse="false"
+                app:rcProgressColor="@color/accent"
+                app:rcBackgroundColor="#FFCCCCCC"
+                />
+                
+                <TextView
+                    android:id="@+id/amt_funded"
+                    android:layout_width="match_parent"
+                    android:layout_height="25sp"
+                    android:gravity="center"
+                    android:textSize="15sp"
+                    android:textColor="@android:color/white"
+                    />
+
+            </RelativeLayout>
 
         </RelativeLayout>
 

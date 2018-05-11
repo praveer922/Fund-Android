@@ -7,10 +7,10 @@ import java.io.Serializable;
  */
 
 public class User implements Serializable{
-    int attendee_id;
-    String name;
-    String email;
-    String profile_image_url;
+    public int attendee_id;
+    public String name;
+    public String email;
+    public String profile_image_url;
 
     public User(int attendee_id, String name, String email, String profile_image_url) {
         this.attendee_id = attendee_id;

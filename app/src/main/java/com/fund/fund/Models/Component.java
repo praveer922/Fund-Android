@@ -11,8 +11,8 @@ public class Component implements Serializable{
     int component_id;
     public String title;
     public Double budget;
-    String image_url;
-    List<Funder> funders;
+    public String image_url;
+    public List<Funder> funders;
 
     public Component(int component_id, String title, Double budget, String image_url, List<Funder> funders) {
         this.component_id = component_id;

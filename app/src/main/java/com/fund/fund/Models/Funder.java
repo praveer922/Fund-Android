@@ -11,7 +11,7 @@ public class Funder implements Serializable{
     String name;
     String email;
     String profile_image_url;
-    double amount_funded;
+    public double amount_funded;
 
     public Funder(int funder_id, String name, String email, String profile_image_url, double amount_funded) {
         this.funder_id = funder_id;
